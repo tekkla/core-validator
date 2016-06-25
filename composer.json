@@ -1,5 +1,5 @@
 {
-    "name": "tekkla/core-framework",
+    "name": "tekkla/core-validator",
     "description": "Validator engine to validate values against one or a set of rules.",
     "license": "MIT",
     "type": "library",

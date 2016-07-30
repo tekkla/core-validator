@@ -138,7 +138,15 @@ class Validator
     }
 
     /**
-     * Sets the rule to validate the value against
+     * Parses a rule defintion and uses it's data so set the rules name, args and a custom result text.
+     *
+     * When providing an array defintition take care of the needed data as follows
+     *
+     * array $rule[
+     *     0 => Name of the rule
+     *     1 => One or an array of arguments to be used by rule
+     *     2 => Custum text that should be returned when rule fails
+     * ]
      *
      * @param string|array $rule
      */
@@ -150,13 +158,8 @@ class Validator
 
         $this->args = [];
 
-
         $string = new CamelCase('');
 
-        // Array type rules are for checks where the func needs one or more parameter
-        // So $rule[0] is the func name and $rule[1] the parameter.
-        // Parameters can be of type array where the elements are used as function parameters in the .. they are
-        // set.
         if (is_array($rule)) {
 
             // Get the functionname

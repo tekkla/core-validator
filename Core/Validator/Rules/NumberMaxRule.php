@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * NumberMaxRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class NumberMaxRule extends AbstractRule
@@ -20,13 +20,15 @@ class NumberMaxRule extends AbstractRule
     public function execute()
     {
         $max = func_get_arg(0);
-        
+
         $result = $this->value <= $max;
-        
+
         if (!$result) {
             $this->msg = [
                 'validator.rule.numbermax',
-                $max
+                [
+                    $max
+                ]
             ];
         }
     }

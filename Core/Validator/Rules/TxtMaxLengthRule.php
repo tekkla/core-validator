@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * TxtMaxLengthRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class TxtMaxLengthRule extends AbstractRule
@@ -20,13 +20,15 @@ class TxtMaxLengthRule extends AbstractRule
     public function execute()
     {
         $max = func_get_arg(0);
-        
+
         $result = strlen((string) $this->value) <= $max;
-        
+
         if (!$result) {
             $this->msg = [
                 'validator.rule.textmaxlength',
-                $max
+                [
+                    $max
+                ]
             ];
         }
     }

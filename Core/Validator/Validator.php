@@ -2,7 +2,6 @@
 namespace Core\Validator;
 
 use Core\Validator\Rules\RuleInterface;
-use Core\Language\Text;
 use Core\Toolbox\Strings\CamelCase;
 
 /**
@@ -17,30 +16,170 @@ class Validator
 
     /**
      *
-     * @var array
+     * @var string
      */
-    private $result = [];
+    private $result;
+
+    /**
+     *
+     * @var string
+     */
+    private $rule;
 
     /**
      *
      * @var array
      */
-    private $rules = [];
+    private $args = [];
 
     /**
      *
-     * @var Text
+     * @var string
      */
     private $text;
 
     /**
-     * Injects a core-language based TextAdapter to return a translated string instead of a 'validator.rule.rulename'-key
      *
-     * @param Text $text
+     * @var mixed
      */
-    public function injectTextAdapter(Text $text)
+    private $value;
+
+    /**
+     * Storage for already loaded rules
+     *
+     * @var array
+     */
+    private static $rules = [];
+
+    /**
+     * Sets a value to validate
+     *
+     * When setting a new value the current result stack gets resetted.
+     *
+     * @param mixed $value
+     * @param bool $trim
+     *            Flag to control if the value should be trimmed before it's get used
+     */
+    public function setValue($value, bool $trim = true)
+    {
+        if ($trim) {
+            $value = trim($value);
+        }
+
+        $this->value = $value;
+        $this->result = [];
+    }
+
+    /**
+     * Sets rule (name)
+     *
+     * @param string $rule
+     *
+     * @throws ValidatorException
+     */
+    public function setRule(string $rule)
+    {
+        if (empty($rule)) {
+            Throw new ValidatorException('Empty rule names are not allowed.');
+        }
+
+        $this->rule = $rule;
+        $this->result = [];
+    }
+
+    /**
+     * Returns set rule (name)
+     *
+     * @return string
+     */
+    public function getRule(): string
+    {
+        return $this->rule;
+    }
+
+    /**
+     * Sets rule arguments
+     *
+     * @param array $args
+     */
+    public function setArgs(array $args)
+    {
+        $this->args = $args;
+    }
+
+    /**
+     * Returns set rule arguments
+     *
+     * @return array
+     */
+    public function getArgs(): array
+    {
+        return $this->args;
+    }
+
+    /**
+     * Sets custom rule text
+     *
+     * @param string $text
+     */
+    public function setText(string $text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * Returns set custom rule text
+     *
+     * @return string
+     */
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    /**
+     * Sets the rule to validate the value against
+     *
+     * @param string|array $rule
+     */
+    public function parseRule($rule)
+    {
+        unset($this->rule);
+        unset($this->text);
+        unset($this->result);
+
+        $this->args = [];
+
+
+        $string = new CamelCase('');
+
+        // Array type rules are for checks where the func needs one or more parameter
+        // So $rule[0] is the func name and $rule[1] the parameter.
+        // Parameters can be of type array where the elements are used as function parameters in the .. they are
+        // set.
+        if (is_array($rule)) {
+
+            // Get the functionname
+            $string->setString($rule[0]);
+            $this->setRule($string->camelize());
+
+            // Parameters set?
+            if (isset($rule[1])) {
+                $this->args = !is_array($rule[1]) ? [
+                    $rule[1]
+                ] : $rule[1];
+            }
+
+            // Custom error message
+            if (isset($rule[2])) {
+                $this->text = $rule[2];
+            }
+        }
+        else {
+            // Get the functionname
+            $string->setString($rule);
+            $this->setRule($string->camelize());
+        }
     }
 
     /**
@@ -53,93 +192,36 @@ class Validator
      * @param string|array $rules
      *            One or more rules
      */
-    public function validate($value, array $rules)
+    public function validate()
     {
-        $this->result = [];
+        // Call rule creation process to make sure rule exists before starting further actions.
+        $rule = $this->createRule($this->rule);
 
-        // Our current value (trimmed)
-        $value = trim($value);
+        // Execute rule on empty values only when rule is explicitly flagged to do so.
+        if (empty($this->value) && $rule->getExecuteOnEmpty() == false) {
+            return;
+        }
 
-        // Validate each rule against the
-        foreach ($rules as $rule) {
+        $rule->setValue($this->value);
 
-            $string = new CamelCase('');
+        // Calling the validation function
+        call_user_func_array([
+            $rule,
+            'execute'
+        ], $this->args);
 
-            // Array type rules are for checks where the func needs one or more parameter
-            // So $rule[0] is the func name and $rule[1] the parameter.
-            // Parameters can be of type array where the elements are used as function parameters in the .. they are
-            // set.
-            if (is_array($rule)) {
+        // Is the validation result negative eg false?
+        if ($rule->isValid() === false) {
 
-                // Get the functionname
-                $string->setString($rule[0]);
-                $rule_name = $string->camelize();
+            // Get msg from rule
+            $msg = $rule->getMsg();
 
-                // Parameters set?
-                if (isset($rule[1])) {
-                    $args = !is_array($rule[1]) ? [
-                        $rule[1]
-                    ] : $rule[1];
-                }
-                else {
-                    $args = [];
-                }
-
-                // Custom error message
-                if (isset($rule[2])) {
-                    $custom_message = $rule[2];
-                }
-            }
-            else {
-                // Get the functionname
-                $string->setString($rule);
-                $rule_name = $string->camelize();
-
-                $args = [];
-                unset($custom_message);
+            // If no error message is set, use the default validator error
+            if (empty($msg)) {
+                $msg = $this->text ?? 'validator.error';
             }
 
-            // Call rule creation process to make sure rule exists before starting further actions.
-            /* @var $rule \Core\Validator\Rules\RuleAbstract */
-            $rule = $this->createRule($rule_name);
-
-            // Execute rule on empty values only when rule is explicitly flagged to do so.
-            if (empty($value) && $rule->getExecuteOnEmpty() == false) {
-                continue;
-            }
-
-            $rule->setValue($value);
-
-            // Calling the validation function
-            call_user_func_array(array(
-                $rule,
-                'execute'
-            ), $args);
-
-            // Is the validation result negative eg false?
-            if ($rule->isValid() === false) {
-
-                // Get msg from rule
-                $msg = $rule->getMsg();
-
-                // If no error message is set, use the default validator error
-                if (empty($msg)) {
-                    $msg = isset($custom_message) ? $custom_message : 'validator.error';
-                }
-
-                if (isset($this->text)) {
-
-                    if (is_array($msg)) {
-                        $text = array_shift($msg);
-                        $msg = vsprintf($this->text->get($text), $msg);
-                    }
-                    else {
-                        $msg = $this->text->get($msg);
-                    }
-                }
-
-                $this->result[] = $msg;
-            }
+            $this->result = $msg;
         }
     }
 
@@ -156,9 +238,9 @@ class Validator
     /**
      * Returns the last validation msg
      *
-     * @return array
+     * @return string
      */
-    public function getResult(): array
+    public function getResult()
     {
         return $this->result;
     }
@@ -174,7 +256,7 @@ class Validator
     public function &createRule($rule_name): RuleInterface
     {
         // Rules have to be singletons
-        if (empty($this->rules[$rule_name])) {
+        if (empty(self::$rules[$rule_name])) {
 
             // Without a leading \ in the rulename it is assumened that we use a Core FW builtin rule
             // otherwise the $rule_name points to a class somewhere outsite of the frasmworks default rules.
@@ -185,18 +267,18 @@ class Validator
 
             // The rule object must be a child of RuleAbstract!
             if (!$rule_object instanceof RuleInterface) {
-                Throw new ValidatorException('Validator rules MUST a either implement the RuleInterface or be an instance of AbstractRule');
+                Throw new ValidatorException('Validator rules MUST be a either implement the RuleInterface or be an instance of AbstractRule which implements this interface.');
             }
 
             // Add rule to the rules stack
-            $this->rules[$rule_name] = $rule_object;
+            self::$rules[$rule_name] = $rule_object;
         }
         else {
 
             // Reset existing rules
-            $this->rules[$rule_name]->reset();
+            self::$rules[$rule_name]->reset();
         }
 
-        return $this->rules[$rule_name];
+        return self::$rules[$rule_name];
     }
 }

@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * SmallerRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class SmallerRule extends AbstractRule

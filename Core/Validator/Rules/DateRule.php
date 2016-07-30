@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * DateRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class DateRule extends AbstractRule

@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * IntegerRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class IntegerRule extends AbstractRule

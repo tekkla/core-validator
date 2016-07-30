@@ -5,7 +5,7 @@ namespace Core\Validator\Rules;
  * EmailRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2015
+ * @copyright 2016
  * @license MIT
  */
 class EmailRule extends AbstractRule
@@ -23,28 +23,30 @@ class EmailRule extends AbstractRule
     {
         $txt = 'validator_email';
         $domain = '';
-        
+
         $result = filter_var($this->value, FILTER_VALIDATE_EMAIL);
-        
+
         if ($result) {
-            
+
             list ($user, $domain) = explode("@", $this->value);
-            
+
             // Perform dns check of mail domain
             if ($domain) {
-                
+
                 $result = checkdnsrr($domain, "MX");
-                
+
                 if (!$result) {
                     $txt = 'validator.rule.email.dnscheck';
                 }
             }
         }
-        
+
         if (!$result) {
             $this->msg = [
                 $txt,
-                $domain
+                [
+                    $domain
+                ]
             ];
         }
     }

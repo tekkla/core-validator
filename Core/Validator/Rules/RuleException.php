@@ -11,6 +11,5 @@ use Core\Validator\ValidatorException;
  * @license MIT
  */
 class RuleException extends ValidatorException
-{
-}
+{}
 

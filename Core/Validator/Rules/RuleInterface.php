@@ -24,7 +24,7 @@ interface RuleInterface
     /**
      * Sets value to check
      *
-     * @param mixed $value
+     * @param mixed $value            
      */
     public function setValue($value);
 

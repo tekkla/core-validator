@@ -51,13 +51,13 @@ abstract class AbstractRule implements RuleInterface
     /**
      * Sets value to check
      *
-     * @param mixed $value
+     * @param mixed $value            
      */
     public function setValue($value)
     {
         // Reset rule object;
         $this->reset();
-
+        
         // Assign value
         $this->value = $value;
     }
@@ -110,7 +110,7 @@ abstract class AbstractRule implements RuleInterface
      *
      * Ideal for rules where you need to combine or accees another rule.
      *
-     * @param string $rule_name
+     * @param string $rule_name            
      *
      * @return \Validator\Rules\RuleInterface
      */

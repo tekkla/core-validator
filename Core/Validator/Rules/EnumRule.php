@@ -14,7 +14,7 @@ class EnumRule extends AbstractRule
     public function execute()
     {
         $result = in_array($this->value, func_get_args());
-
+        
         if (!$result) {
             $this->msg = [
                 'validator.rule.enum',

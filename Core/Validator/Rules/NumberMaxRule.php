@@ -20,9 +20,9 @@ class NumberMaxRule extends AbstractRule
     public function execute()
     {
         $max = func_get_arg(0);
-
+        
         $result = $this->value <= $max;
-
+        
         if (!$result) {
             $this->msg = [
                 'validator.rule.numbermax',

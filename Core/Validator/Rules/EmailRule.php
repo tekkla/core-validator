@@ -23,24 +23,24 @@ class EmailRule extends AbstractRule
     {
         $txt = 'validator_email';
         $domain = '';
-
+        
         $result = filter_var($this->value, FILTER_VALIDATE_EMAIL);
-
+        
         if ($result) {
-
+            
             list ($user, $domain) = explode("@", $this->value);
-
+            
             // Perform dns check of mail domain
             if ($domain) {
-
+                
                 $result = checkdnsrr($domain, "MX");
-
+                
                 if (!$result) {
                     $txt = 'validator.rule.email.dnscheck';
                 }
             }
         }
-
+        
         if (!$result) {
             $this->msg = [
                 $txt,

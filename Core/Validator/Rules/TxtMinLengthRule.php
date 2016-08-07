@@ -20,13 +20,15 @@ class TxtMinLengthRule extends AbstractRule
     public function execute()
     {
         $min = func_get_arg(0);
-
+        
         $result = strlen((string) $this->value) >= $min;
-
+        
         if (!$result) {
             $this->msg = [
                 'validator.rule.textminlength',
-                [$min]
+                [
+                    $min
+                ]
             ];
         }
     }

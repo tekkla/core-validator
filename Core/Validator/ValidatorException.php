@@ -9,5 +9,4 @@ namespace Core\Validator;
  * @license MIT
  */
 class ValidatorException extends \Exception
-{
-}
+{}

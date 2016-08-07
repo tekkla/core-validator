@@ -24,7 +24,7 @@ class CompareRule extends AbstractRule
     {
         $to_compare_with = func_get_arg(0);
         $mode = func_num_args() == 1 ? '=' : func_get_arg(1);
-
+        
         $modes = [
             '=',
             '>',
@@ -32,33 +32,33 @@ class CompareRule extends AbstractRule
             '>=',
             '<='
         ];
-
+        
         if (!in_array($mode, $modes)) {
             Throw new ValidatorException(sprintf('Parameter "%s" not allowed', $mode), 1001);
         }
-
+        
         switch ($mode) {
             case '=':
                 $result = $this->value == $to_compare_with;
                 break;
-
+            
             case '>':
                 $result = $this->value > $to_compare_with;
                 break;
-
+            
             case '<':
                 $result = $this->value < $to_compare_with;
                 break;
-
+            
             case '>=':
                 $result = $this->value >= $to_compare_with;
                 break;
-
+            
             case '<=':
                 $result = $this->value <= $to_compare_with;
                 break;
         }
-
+        
         if (!$result) {
             $this->msg = [
                 'validator.rule.compare',

@@ -19,7 +19,7 @@ class BlankRule extends AbstractRule
     public function execute()
     {
         $result = $this->value !== '' ? true : false;
-
+        
         if (!$result) {
             $this->msg = 'validator.rule.blank';
         }

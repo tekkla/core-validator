@@ -8,7 +8,7 @@ namespace Core\Validator\Rules;
  * @copyright 2016
  * @license MIT
  */
-class PhoneRule extends AbstractRule
+class Time24Rule extends AbstractRule
 {
 
     /**
@@ -25,7 +25,7 @@ class PhoneRule extends AbstractRule
                 'regexp' => $regexp
             ]
         ]);
-        
+
         if (!$result) {
             $this->msg = 'validator.rule.time24';
         }

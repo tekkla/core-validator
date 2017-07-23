@@ -7,7 +7,7 @@ use Core\Validator\Validator;
  * AbstractRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2016
+ * @copyright 2016-2017
  * @license MIT
  */
 abstract class AbstractRule implements RuleInterface
@@ -15,21 +15,21 @@ abstract class AbstractRule implements RuleInterface
 
     /**
      *
-     * @var string Errortext
+     * @var string
      */
     protected $msg = '';
 
     /**
      *
-     * @var mixed Value to validate
+     * @var mixed
      */
     protected $value;
 
     /**
      *
-     * @var boolean
+     * @var bool
      */
-    protected $execute_on_empty = true;
+    protected $execute_on_empty;
 
     /**
      *
@@ -40,8 +40,7 @@ abstract class AbstractRule implements RuleInterface
     /**
      * Constructor
      *
-     * @param mixed $value
-     *            Value to validate
+     * @param Validator
      */
     public function __construct(Validator $validator)
     {
@@ -65,11 +64,11 @@ abstract class AbstractRule implements RuleInterface
     /**
      * Execute rule on empty value?
      *
-     * @return boolean
+     * @return bool
      */
     final public function getExecuteOnEmpty(): bool
     {
-        return $this->execute_on_empty;
+        return $this->execute_on_empty ?? true;
     }
 
     /**
@@ -89,9 +88,9 @@ abstract class AbstractRule implements RuleInterface
      *
      * @return string
      */
-    public function getMsg()
+    public function getMsg(): string
     {
-        return $this->msg;
+        return $this->msg ?? '';
     }
 
     /**
@@ -102,7 +101,7 @@ abstract class AbstractRule implements RuleInterface
     public function reset()
     {
         // Reset old message;
-        $this->msg = '';
+        unset($this->msg);
     }
 
     /**
@@ -112,9 +111,9 @@ abstract class AbstractRule implements RuleInterface
      *
      * @param string $rule_name
      *
-     * @return \Validator\Rules\RuleInterface
+     * @return RuleInterface
      */
-    protected function createRule($rule_name): RuleInterface
+    protected function createRule(string $rule_name): RuleInterface
     {
         return $this->validator->createRule($rule_name);
     }

@@ -7,7 +7,7 @@ use Core\Validator\ValidatorException;
  * CompareRule.php
  *
  * @author Michael "Tekkla" Zorn <tekkla@tekkla.de>
- * @copyright 2016
+ * @copyright 2016-2017
  * @license MIT
  */
 class CompareRule extends AbstractRule
@@ -18,7 +18,7 @@ class CompareRule extends AbstractRule
      *
      * @see \Core\Validator\Rules\AbstractRule::execute()
      *
-     * @throws InvalidArgumentException
+     * @throws ValidatorException
      */
     public function execute()
     {
@@ -33,7 +33,7 @@ class CompareRule extends AbstractRule
             '<='
         ];
         
-        if (!in_array($mode, $modes)) {
+        if (! in_array($mode, $modes)) {
             Throw new ValidatorException(sprintf('Parameter "%s" not allowed', $mode), 1001);
         }
         
@@ -59,7 +59,7 @@ class CompareRule extends AbstractRule
                 break;
         }
         
-        if (!$result) {
+        if (! $result) {
             $this->msg = [
                 'validator.rule.compare',
                 [

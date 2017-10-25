@@ -1,47 +1,36 @@
 {
-    "name": "tekkla/core-validator",
-    "description": "Validator engine to validate values against one or a set of rules.",
-    "license": "MIT",
-    "type": "library",
-    "keywords":
-    [
-        "core",
-        "validator",
-        "rule",
-        "ruleset",
-        "translation"
-    ],
-
-    "homepage": "https://github.com/tekkla/core-validator",
-    "autoload":
-    {
-        "psr-0":
-        {
-            "Core\\Validator": ""
-        }
-    },
-
-    "authors":
-    [
-        {
-            "name": "Michael Zorn",
-            "email": "tekkla@tekkla.de",
-            "role": "Developer"
-        }
-    ],
-
-    "require":
-    {
-        "php": ">=7.0.0",
-        "tekkla/core-language": ">=1.1.1.2",
-        "tekkla/core-toolbox": ">=0.0.6.1"
-    },
-
-    "repositories":
-    [
-        {
-            "type": "composer",
-            "url": "https://packagist.org/"
-        }
-    ]
+	"name" : "tekkla/core-validator",
+	"description" : "Validator engine to validate values against one or a set of rules.",
+	"license" : "MIT",
+	"type" : "library",
+	"keywords" : [
+		"core",
+		"validator",
+		"rule",
+		"ruleset",
+		"translation"
+	],
+	"homepage" : "https://github.com/tekkla/core-validator",
+	"autoload" : {
+		"psr-0" : {
+			"Core\\Validator" : ""
+		}
+	},
+	"authors" : [{
+			"name" : "Michael Zorn",
+			"email" : "tekkla@tekkla.de",
+			"role" : "Developer"
+		}
+	],
+	"require" : {
+		"php" : ">=7.0.0",
+		"tekkla/core-language" : "dev-dev",
+		"tekkla/core-toolbox" : "dev-dev"
+	},
+	"repositories" : [{
+			"type" : "composer",
+			"url" : "https://packagist.org/"
+		}
+	],
+	"minimum-stability" : "dev"
 }

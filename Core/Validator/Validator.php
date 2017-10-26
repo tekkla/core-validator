@@ -239,7 +239,7 @@ class Validator implements ValidatorInterface
      * {@inheritdoc}
      * @see \Core\Validator\ValidatorInterface::createRule()
      */
-    public function &createRule($rule_name): RuleInterface
+    public function &createRule(string $rule_name): RuleInterface
     {
         // Make sure that the rules name is camelcased
         $string = new CamelCase($rule_name);
